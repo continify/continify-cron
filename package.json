@@ -1,0 +1,49 @@
+{
+  "name": "continify-cron",
+  "version": "1.0.0",
+  "main": "index.js",
+  "typings": "types/index.d.ts",
+  "repository": "https://github.com/continify/continify-cron.git",
+  "author": "beanjs",
+  "license": "MIT",
+  "engines": {
+    "node": ">=16"
+  },
+  "scripts": {
+    "coverage": "npm run unit -- --cov --coverage-report=html",
+    "coverage:ci": "npm run unit -- --cov --coverage-report=html --no-browser --no-check-coverage -R terse",
+    "coverage:ci-check-coverage": "nyc check-coverage --branches 100 --functions 100 --lines 100 --statements 100",
+    "lint": "npm run lint:standard && npm run lint:typescript",
+    "lint:fix": "standard --fix",
+    "lint:standard": "standard --verbose | snazzy",
+    "lint:typescript": "eslint -c types/.eslintrc types/**/*.d.ts",
+    "test": "npm run lint && npm run coverage",
+    "unit": "tap",
+    "unit:junit": "tap-mocha-reporter xunit < out.tap > test/junit-testresults.xml",
+    "unit:report": "tap --cov --coverage-report=html --coverage-report=cobertura | tee out.tap"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.49.0",
+    "@typescript-eslint/parser": "^5.49.0",
+    "continify": "^0.1.13",
+    "eslint": "^8.32.0",
+    "eslint-config-standard": "^17.0.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^6.1.1",
+    "eslint-plugin-standard": "^5.0.0",
+    "pino-pretty": "^9.1.1",
+    "pre-commit": "^1.2.2",
+    "snazzy": "^9.0.0",
+    "standard": "^17.0.0",
+    "tap": "^16.3.4",
+    "typescript": "^4.9.4"
+  },
+  "pre-commit": [
+    "lint"
+  ],
+  "dependencies": {
+    "continify-plugin": "^1.0.0",
+    "node-cron": "^3.0.2"
+  }
+}
