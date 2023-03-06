@@ -9,6 +9,7 @@ export interface CronJob {
 }
 
 export interface ContinifyCronOptions {
+  runOnInit?: boolean
 }
 
 export type ContinifyCronPlugin = (
@@ -48,6 +49,10 @@ declare module 'avvio' {
 }
 
 declare module 'continify' {
+  interface ContinifyOptions {
+    cron?: ContinifyCronOptions
+  }
+
   interface Continify {
     $cronJobs: CronJob[]
     cron(options: CronOptions): Continify

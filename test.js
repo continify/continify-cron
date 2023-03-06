@@ -1,3 +1,5 @@
+// process.env['CONTINIFY_CRON_RUN-ON-INIT'] = true
+
 const Continify = require('continify')
 const ContinifyCron = require('.')
 
@@ -11,7 +13,7 @@ async function init () {
     name: 'cron-0',
     time: '* * * * * *',
     handler () {
-      console.log(this)
+      // console.log(this)
       ins.close()
     }
   })

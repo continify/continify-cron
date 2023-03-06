@@ -1,6 +1,6 @@
 {
   "name": "continify-cron",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "main": "index.js",
   "typings": "types/index.d.ts",
   "repository": "https://github.com/continify/continify-cron.git",
@@ -44,6 +44,8 @@
   ],
   "dependencies": {
     "continify-plugin": "^1.0.0",
-    "cron": "^2.2.0"
+    "cron": "^2.2.0",
+    "get-value": "^3.0.1",
+    "lodash.merge": "^4.6.2"
   }
 }
