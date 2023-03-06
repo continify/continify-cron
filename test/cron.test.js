@@ -33,6 +33,25 @@ tap.test('cron', async t => {
   await waitClose(ins)
 })
 
+tap.test('cron: runOnInit', async t => {
+  const ins = Continify()
+  ins.register(ContinifyCron, { runOnInit: true })
+
+  await ins.ready()
+  t.plan(1)
+
+  ins.cron({
+    name: 'cron-1',
+    time: '* * * * * *',
+    handler () {
+      t.equal(this.$fullname, 'root')
+      ins.close()
+    }
+  })
+
+  await waitClose(ins)
+})
+
 tap.test('cron:scope 0', async t => {
   t.plan(1)
 

@@ -48,23 +48,12 @@ module.exports = ContinifyPlugin(
     function cron (options) {
       const { name, time, timezone, handler } = options
 
-      const job = new CronJob(
-        time,
-        null,
-        null,
-        false,
-        timezone,
-        this,
-        cronOption.runOnInit
-      )
+      const job = new CronJob(time, null, null, false, timezone, this)
 
       cronJobs.push(job)
 
       const prefix = this[kCronPrefix]
-
-      job.$fullname = `${prefix}.${name}`
-      job.$fullname = job.$fullname.substring(1)
-
+      job.$fullname = `${prefix}.${name}`.substring(1)
       job.$handler = handler
       job.$name = name
       job.$busy = false
@@ -87,6 +76,17 @@ module.exports = ContinifyPlugin(
       for (const job of cronJobs) {
         job.stop()
       }
+    })
+
+    ins.$avvio._readyQ.push(async () => {
+      const runOnInit = Boolean(cronOption.runOnInit)
+      if (!runOnInit) return
+
+      ins.$avvio._readyQ.pause()
+      for (const job of cronJobs) {
+        await job.fireOnTick()
+      }
+      ins.$avvio._readyQ.resume()
     })
   },
   {

@@ -1,6 +1,6 @@
 {
   "name": "continify-cron",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "main": "index.js",
   "typings": "types/index.d.ts",
   "repository": "https://github.com/continify/continify-cron.git",
