@@ -1,6 +1,7 @@
 import { Continify } from 'continify'
 
 export interface CronJob {
+  $fullname: string
   $name: string
 
   start(): void

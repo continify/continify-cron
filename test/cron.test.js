@@ -33,7 +33,7 @@ tap.test('cron', async t => {
   await waitClose(ins)
 })
 
-tap.test('cron:scope', async t => {
+tap.test('cron:scope 0', async t => {
   t.plan(1)
 
   const ins = Continify()
@@ -49,6 +49,35 @@ tap.test('cron:scope', async t => {
           ins.close()
         }
       })
+    },
+    { name: 'i1' }
+  )
+
+  await ins.ready()
+  await waitClose(ins)
+})
+
+tap.test('cron:scope 1', async t => {
+  t.plan(1)
+
+  const ins = Continify()
+  ins.register(ContinifyCron)
+
+  ins.register(
+    async function (i1) {
+      i1.register(
+        async function (i2) {
+          i2.cron({
+            name: 'cron-scope',
+            time: '* * * * * *',
+            handler (job) {
+              t.equal(job.$fullname, 'i1.i2.cron-scope')
+              ins.close()
+            }
+          })
+        },
+        { name: 'i2' }
+      )
     },
     { name: 'i1' }
   )
@@ -117,11 +146,11 @@ tap.test('cron:hook', async t => {
   ins.register(ContinifyCron)
 
   ins.addHook('onBeforeCron', async function (job) {
-    t.equal(job.$name, 'cron-hook')
+    t.equal(job.$fullname, 'i1.cron-hook')
   })
 
   ins.addHook('onAfterCron', async function (job) {
-    t.equal(job.$name, 'cron-hook')
+    t.equal(job.$fullname, 'i1.cron-hook')
     this.close()
   })
 
@@ -152,11 +181,11 @@ tap.test('cron:hook error', async t => {
   })
 
   ins.addHook('onBeforeCron', async function (job) {
-    t.equal(job.$name, 'cron-hook')
+    t.equal(job.$fullname, 'i1.cron-hook')
   })
 
   ins.addHook('onAfterCron', async function (job) {
-    t.equal(job.$name, 'cron-hook')
+    t.equal(job.$fullname, 'i1.cron-hook')
     throw new Error('cron error')
   })
 

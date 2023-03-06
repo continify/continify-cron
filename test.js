@@ -1,29 +1,37 @@
 const Continify = require('continify')
 const ContinifyCron = require('.')
 
-function timeout () {
-  return new Promise(resolve => {
-    setTimeout(resolve, 2000)
-  })
-}
-
 async function init () {
   const ins = Continify()
   ins.register(ContinifyCron)
+
   await ins.ready()
 
   ins.cron({
-    name: 'test cron',
-    expression: '*/1 * * * * *',
-    async handler () {
-      console.log('cron schedule:' + this.$fullname)
-      await timeout()
+    name: 'cron-0',
+    time: '* * * * * *',
+    handler () {
+      console.log(this)
+      ins.close()
     }
   })
-
-  setTimeout(() => {
-    ins.close()
-  }, 10000)
 }
 
 init()
+
+// const CronJob = require('cron').CronJob
+// const job = new CronJob(
+//   '* * * * * *',
+//   function () {
+//     console.log(this)
+
+//     job.stop()
+//     console.log('You will see this message every second')
+//   },
+//   null,
+//   true,
+//   'America/Los_Angeles',
+//   { a: 11 }
+// )
+
+// console.log(job)

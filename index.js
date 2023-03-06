@@ -1,6 +1,8 @@
 const ContinifyPlugin = require('continify-plugin')
 const { CronJob } = require('cron')
 
+const kCronPrefix = Symbol('continify.cron.prefix')
+
 function defaultRunHookPromise (name, job) {
   return new Promise((resolve, reject) => {
     const next = err => {
@@ -18,11 +20,11 @@ module.exports = ContinifyPlugin(async function (ins, options) {
     const { context } = this
 
     if (this.$busy) {
-      return context.$log.warn(`cron busy: ${this.$name}`)
+      return context.$log.warn(`cron busy: ${this.$fullname}`)
     }
 
     this.$busy = true
-    context.$log.info(`cron execute: ${this.$name}`)
+    context.$log.info(`cron execute: ${this.$fullname}`)
     await defaultRunHookPromise.call(context, 'onBeforeCron', this)
     try {
       await this.$handler.call(this.context, this)
@@ -41,16 +43,26 @@ module.exports = ContinifyPlugin(async function (ins, options) {
 
     cronJobs.push(job)
 
+    const prefix = this[kCronPrefix]
+
+    job.$fullname = `${prefix}.${name}`
+    job.$fullname = job.$fullname.substring(1)
+
     job.$handler = handler
     job.$name = name
     job.$busy = false
     job.fireOnTick = fireOnTick
+
     job.start()
   }
 
+  ins[kCronPrefix] = ''
   ins.decorate('$cronJobs', cronJobs)
   ins.decorate('cron', cron.bind(ins))
   ins.addHook('onRegister', async function (nIns) {
+    const prefix = nIns[kCronPrefix]
+    nIns[kCronPrefix] = `${prefix}.${nIns.$name}`
+
     nIns.decorate('cron', cron.bind(nIns))
   })
 
